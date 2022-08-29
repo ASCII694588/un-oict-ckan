@@ -14,9 +14,9 @@ services:
     container_name: ckan_${CKAN_ENTITY_OWNER}
     build:
       context: ../../
-#    depends_on:
-#      db:
-#        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
 #      solr:
 #        condition: service_healthy
 #      redis:
@@ -71,20 +71,20 @@ services:
       test: ["CMD", "pg_isready", "-U", "ckan"]
     restart: unless-stopped
 
-#  solr:
-#    container_name: solr
-#    build:
-#      context: ../../
-#      dockerfile: contrib/docker/solr/Dockerfile
-#    volumes:
-#      - solr_data:/opt/solr/server/solr/ckan/data
-#    restart: unless-stopped
-#    healthcheck:
-#      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:${SOLR_PORT}/solr/"]
-#
-#  redis:
-#    container_name: redis
-#    image: redis:6.2
-#    restart: unless-stopped
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "-e", "QUIT"]
+  solr:
+    container_name: solr_${CKAN_ENTITY_OWNER}
+    build:
+      context: ../../
+      dockerfile: contrib/docker/solr/Dockerfile
+    volumes:
+      - solr_data:/opt/solr/server/solr/ckan/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:${SOLR_PORT}/solr/"]
+
+  redis:
+    container_name: redis_${CKAN_ENTITY_OWNER}
+    image: redis:6.2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-e", "QUIT"]
